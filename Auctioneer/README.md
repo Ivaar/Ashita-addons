@@ -10,6 +10,7 @@ buy [item name] [single OR 0 and stack OR 1] [price] -- buy an item on auction h
 sell [item name] [single OR 0 and stack OR 1] [price] -- sell an item, must open ah once after addon has loaded
 
 [item name] -- Accepts auto-translate, short or full item name, no quotes needed. 
+
 [price] -- CSV and EU decimal mark are optional. e.g. 100000 or 100,000 or 100.000
 
 inbox / ibox	-- open delivery inbox
