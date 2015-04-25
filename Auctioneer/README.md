@@ -5,13 +5,15 @@ Auction house bidding tool - addon for Ashita
 Allows you to perform auction house actions with commands, much like bidder with additional functionality.
 Displays a text object with sales information when opening ah menu (if text object is set to show).
 
-buy [item name] [single OR 0 and stack OR 1] [price] -- buy an item on auction house
+buy [item name] [stack] [price] -- buy an item on auction house
 
-sell [item name] [single OR 0 and stack OR 1] [price] -- sell an item, must open ah once after addon has loaded
+sell [item name] [ stack] [price] -- sell an item, must open ah once after addon has loaded/players logged in.
 
-[item name] -- Accepts auto-translate, short or full item name, no quotes needed. 
+[item name] - Accepts auto-translate, short or full item name, no quotes needed.
 
-[price] -- CSV and EU decimal mark are optional. e.g. 100000 or 100,000 or 100.000
+[Stack] - "stack" or "1" or "single" or "0"
+
+[price] - CSV and EU decimal mark are optional. e.g. 100000 or 100,000 or 100.000
 
 inbox / ibox	-- open delivery inbox
 
