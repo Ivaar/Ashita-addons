@@ -1,10 +1,10 @@
+_addon.name = 'NPCit';
+_addon.version = '1.0.0.1';
+_addon.author = 'Ivaar';
+
 require 'common';
 require 'packet';
 require 'timer';
-
-_addon.name = 'NPCit';
-_addon.version = '1.0.0.0';
-_addon.author = 'Ivaar';
 
 sales_que = {};
 
@@ -13,6 +13,15 @@ function table.find(t, val)
         if v == val then return k; end
     end
     return nil;
+end;
+
+function table.tostring(t, form)
+    str = ' ';
+    for x = 1,#t do
+        str = str..string.format(form,t[x]);
+    end
+    str = string.upper(str)..string.format('  size [%.2d]',#t);
+    return str;
 end;
 
 function hasflag(n, flag)
@@ -89,6 +98,8 @@ function sell_npc_item(item)
     end
     
     local appraisal = struct.pack("bbxx bxxx hbx", 0x084, 0x06, count, item, index):totable();
+
+    --print(string.format('modified packet %s',table.tostring(appraisal, ' %.2x')));
     AddOutgoingPacket(npcSale, 0x84, #npcSale);
     
     if appraised[item] == nil then 
@@ -97,6 +108,7 @@ function sell_npc_item(item)
     end
     
     local confirm = struct.pack("bbxxbxxx", 0x085, 0x04, 0x01):totable();
+    --print(string.format('modified packet %s',table.tostring(confirm, ' %.2x')));
     AddOutgoingPacket(confirm, 0x85, #confirm);
     return sell_loop(item);
 end;
@@ -123,10 +135,6 @@ ashita.register_event('command', function(cmd, nType)
     local args = cmd:GetArgs();
     if (string.lower(args[1]) ~= '/npcit') then 
         return false;
-    end
-    
-    if args[2] == nil then
-        return true;
     end
     
     if args[2] ~= nil then
