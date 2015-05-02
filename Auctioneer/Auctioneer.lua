@@ -4,7 +4,7 @@ require 'timer';
 
 _addon.name = 'Auctioneer';
 _addon.version = '1.0.0.0';
-_addon.author = 'SblmS2J';
+_addon.author = 'Ivaar';
 
 default = {
     text = {size = 10,font = 'Consolas',pos = {x = 390,y = 50}},
