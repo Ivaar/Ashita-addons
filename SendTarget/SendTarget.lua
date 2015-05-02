@@ -28,7 +28,7 @@
 
 _addon.name = 'SendTarget';
 _addon.version = '1.0.0.0';
-_addon.author = 'SblmS2J';
+_addon.author = 'Ivaar';
 
 require 'common'
 require 'events'
