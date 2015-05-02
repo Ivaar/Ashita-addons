@@ -4,7 +4,7 @@ target = require('ffxi.target');
 
 _addon.name = 'Trade';
 _addon.version = '1.0.0.0';
-_addon.author = 'SblmS2J';
+_addon.author = 'Ivaar';
     
 whitelist = {
     'Name',
