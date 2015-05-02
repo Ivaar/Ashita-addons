@@ -1,5 +1,5 @@
 _addon.name = 'NPCit';
-_addon.version = '1.0.0.1';
+_addon.version = '1.0.0.2';
 _addon.author = 'Ivaar';
 
 require 'common';
@@ -57,6 +57,7 @@ function check_que(item)
 end;
 
 function check_item(name)
+    name = ParseAutoTranslate(name, false);
     local item = AshitaCore:GetResourceManager():GetItemByName(name);
     if item == nil then
         actions=nil,print(string.format('Error: %s not a valid item name.',name)); 
