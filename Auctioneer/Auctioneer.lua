@@ -3,11 +3,11 @@ require 'packet';
 require 'timer';
 
 _addon.name = 'Auctioneer';
-_addon.version = '1.0.0.0';
+_addon.version = '1.0.0.1';
 _addon.author = 'Ivaar';
 
 default = {
-    text = {size = 10,font = 'Consolas',pos = {x = 390,y = 50}},
+    text = {size = 10,font = 'Consolas',pos = {x = 0,y = 0}},
     auction_list = {
         visibility=true,
         timer=true,
@@ -69,7 +69,7 @@ local display_box = function()
                 if (config.auction_list.date) then
                     str = str..string.format(' [%s]',os.date('%c', timer));
                 end
-                str = str..string.format(' %s ',itemName(auction_box[x].item));
+                str = str..string.format(' %s ',auction_box[x].item);
                 if (auction_box[x].count ~= 1) then
                     str = str..string.format('x%d ',auction_box[x].count);
                 end
@@ -192,7 +192,7 @@ function update_sales_status(packet)
             elseif (status == 0x0B or status == 0x0D or status == 0x16) then
                 auction_box[slot].status = 'Not Sold';
             end
-            auction_box[slot].item = struct.unpack('h', packet, 0x28+1);
+            auction_box[slot].item = itemName(struct.unpack('h', packet, 0x28+1));
             auction_box[slot].count = packet:byte(0x2A+1);
             auction_box[slot].price = struct.unpack('i', packet, 0x2C+1);
             auction_box[slot].timestamp = struct.unpack('i', packet, 0x38+1);
@@ -279,7 +279,7 @@ end;
 
 function ah_proposal(bid, name, vol, price)
     name = ParseAutoTranslate(name, false);
-    local item = AshitaCore:GetResourceManager():GetItemByName(name);
+    local item = AshitaCore:GetResourceManager():GetItemByName(name, 2);
     if (item == nil) then 
         print(string.format('AH Error: "%s" not a valid item name.',name));
         return false; 
