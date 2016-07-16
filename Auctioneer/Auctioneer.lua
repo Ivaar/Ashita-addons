@@ -3,7 +3,7 @@ require 'packet';
 require 'timer';
 
 _addon.name = 'Auctioneer';
-_addon.version = '1.0.0.1';
+_addon.version = '1.16.7.16';
 _addon.author = 'Ivaar';
 
 default = {
@@ -42,7 +42,7 @@ function hasflag(n, flag)
 end;
 
 function itemName(id)
-    return AshitaCore:GetResourceManager():GetItemByID(tonumber(id)).Name;
+    return AshitaCore:GetResourceManager():GetItemByID(tonumber(id)).Name[0];
 end;
 
 function timef(ts)
