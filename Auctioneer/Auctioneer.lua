@@ -1,9 +1,8 @@
 require 'common';
-require 'packet';
 require 'timer';
 
 _addon.name = 'Auctioneer';
-_addon.version = '1.16.7.16';
+_addon.version = '1.17.12.24';
 _addon.author = 'Ivaar';
 
 default = {
@@ -19,7 +18,7 @@ default = {
 };
 
 zones = {};
-zones.ah = {'Bastok Mines', 'Bastok Markets', 'Norg', 'Southern San d\'Oria', 'Port San d\'Oria', 'Raboa', 'Windurst Woods', 'Windurst Walls', 'Kazham', 'Lower Jueno', 'Ru\'Lude Gardens', 'Port Jueno', 'Upper Jueno', 'Aht Urhgan Whitegate', 'Al Zahbi', 'Nashmau', 'Tavnazian Safehold', 'Western Adoulin', 'Eastern Adoulin'};
+zones.ah = {'Bastok Mines', 'Bastok Markets', 'Norg', 'Southern San d\'Oria', 'Port San d\'Oria', 'Raboa', 'Windurst Woods', 'Windurst Walls', 'Kazham', 'Lower Jeuno', 'Ru\'Lude Gardens', 'Port Jeuno', 'Upper Jeuno', 'Aht Urhgan Whitegate', 'Al Zahbi', 'Nashmau', 'Tavnazian Safehold', 'Western Adoulin', 'Eastern Adoulin'};
 zones.mh = {};
 
 function table.find(t, val)
@@ -37,12 +36,12 @@ function table.tostring(t, form)
     return str;
 end;
 
-function hasflag(n, flag)
+function has_flag(n, flag)
     return bit.band(n, flag) == flag;
 end;
 
-function itemName(id)
-    return AshitaCore:GetResourceManager():GetItemByID(tonumber(id)).Name[0];
+function item_name(id)
+    return AshitaCore:GetResourceManager():GetItemById(tonumber(id)).Name[0];
 end;
 
 function timef(ts)
@@ -62,7 +61,7 @@ local display_box = function()
                 str = str..string.format(' %s',auction_box[x].status);
             end
             if (auction_box[x].status ~= 'Empty') then
-                local timer = auction_box[x].status == 'On auction' and auction_box[x].timestamp+248836 or auction_box[x].timestamp;
+                local timer = auction_box[x].status == 'On auction' and auction_box[x].timestamp+829440 or auction_box[x].timestamp;
                 if (config.auction_list.timer) then
                     str = str..string.format(' %s',(auction_box[x].status == 'On auction' and os.time()-timer > 0) and 'Expired' or timef(math.abs(os.time()-timer)));
                 end
@@ -86,16 +85,17 @@ local display_box = function()
 end;
 
 ashita.register_event('unload', function()
-    AshitaCore:GetFontManager():DeleteFontObject('auction_list');
-    settings:save(_addon.path .. 'settings/settings.json', config);
+    AshitaCore:GetFontManager():Delete('auction_list');
+    ashita.settings.save(_addon.path .. 'settings/settings.json', config);
 end);
 
 ashita.register_event('load', function()
-    config = settings:load(_addon.path .. 'settings/settings.json') or default;
-    config = table.merge(default, config);
-    auction_list = AshitaCore:GetFontManager():CreateFontObject('auction_list');
-    auction_list:SetFont(config.text.font,config.text.size);
-    auction_list:SetPosition(config.text.pos.x,config.text.pos.y);
+    config = ashita.settings:load_merged(_addon.path .. 'settings/settings.json') or default;
+    auction_list = AshitaCore:GetFontManager():Create('auction_list');
+    auction_list:SetFontFamily(config.text.font);
+    auction_list:SetFontHeight(config.text.size);
+    auction_list:SetPositionX(config.text.pos.x);
+    auction_list:SetPositionY(config.text.pos.y);
     auction_list:SetVisibility(config.auction_list.visibility);
     auction_list:GetBackground():SetVisibility(true);
 end);
@@ -110,15 +110,15 @@ ashita.register_event('render', function()
 end);
 
 ashita.register_event('command', function(cmd, nType)
-    local args = cmd:GetArgs();
+    local args = cmd:args();
     if (#args == 0) then return false; end
-    
+
     args[1] = string.lower(args[1]);
     if (args[1] ~= '/ah' and args[1] ~= '/buy' and args[1] ~= '/sell' and args[1] ~= '/inbox' and args[1] ~= '/outbox' and args[1] ~= '/ibox' and args[1] ~= '/obox') then
         return false;
     end
     
-    local zone = AshitaCore:GetResourceManager():GetString('areas', AshitaCore:GetDataManager():GetParty():GetPartyMemberZone(0));
+    local zone = AshitaCore:GetResourceManager():GetString('areas', AshitaCore:GetDataManager():GetParty():GetMemberZone(0));
     local now = os.clock();
     if (table.hasvalue(zones.ah,zone) == true and (lclock == nil or lclock < now)) then
         if (args[1] == '/sell' or args[1] == '/buy') then
@@ -130,20 +130,20 @@ ashita.register_event('command', function(cmd, nType)
         if (args[1] == '/outbox' or args[1] == '/obox') then
             local obox = struct.pack("bbxxbbbbbbbbbbbbbbbb", 0x4B,0x0A,0x0D,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x01,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF):totable();
             --print(string.format('modified %s  size [%d]',table.tostring(obox, '%.2X '),#obox));
-            AddIncomingPacket(obox, 0x4B, #obox);
+            AddIncomingPacket(0x4B, obox);
             return true;
         end
         
         if (args[1] == '/inbox' or args[1] == '/ibox') then
             local ibox = struct.pack("bbxxbbbbbbbbbbbbbbbb", 0x4B,0x0A,0x0E,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x01,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF):totable();
             --print(string.format('modified %s  size [%d]',table.tostring(ibox, '%.2X '),#ibox));
-            AddIncomingPacket(ibox, 0x4B, #ibox);
+            AddIncomingPacket(0x4B, ibox);
             return true;
         end
         
         if (#args == 1 or string.lower(args[2]) == 'menu') then
             lclock = now+3;
-            AddIncomingPacket(struct.pack("bbbbbbbi32i21", 0x4C,0x1E,0x00,0x00,0x02,0x00,0x01,0x00,0x00):totable(), 0x4C, 60);
+            AddIncomingPacket(0x4C, struct.pack("bbbbbbbi32i21", 0x4C,0x1E,0x00,0x00,0x02,0x00,0x01,0x00,0x00):totable());
             return true;
         elseif (string.lower(args[2]) == 'clear') then
             lclock = now+3; 
@@ -192,7 +192,7 @@ function update_sales_status(packet)
             elseif (status == 0x0B or status == 0x0D or status == 0x16) then
                 auction_box[slot].status = 'Not Sold';
             end
-            auction_box[slot].item = itemName(struct.unpack('h', packet, 0x28+1));
+            auction_box[slot].item = item_name(struct.unpack('h', packet, 0x28+1));
             auction_box[slot].count = packet:byte(0x2A+1);
             auction_box[slot].price = struct.unpack('i', packet, 0x2C+1);
             auction_box[slot].timestamp = struct.unpack('i', packet, 0x38+1);
@@ -217,12 +217,12 @@ ashita.register_event('incoming_packet', function(id, size, packet)
         if (pType == 0x04) then
             local slot = find_empty_slot()
             local fee = struct.unpack('i', packet, 9)
-            if (last4E ~= nil and packet:byte(7) == 0x01 and slot ~= nil and last4E ~= nil and last4E:byte(5) == 0x04 and packet:sub(13,17) == last4E:sub(13,17) and AshitaCore:GetDataManager():GetInventory():GetInventoryItem(0, 0).Count >= fee) then				
+            if (last4E ~= nil and packet:byte(7) == 0x01 and slot ~= nil and last4E ~= nil and last4E:byte(5) == 0x04 and packet:sub(13,17) == last4E:sub(13,17) and AshitaCore:GetDataManager():GetInventory():GetItem(0, 0).Count >= fee) then				
                 local sell_confirm = struct.pack("bbxxbbxxbbbbbbxxbi32i11", 0x4E,0x1E,0x0B,slot,last4E:byte(9),last4E:byte(10),last4E:byte(11),last4E:byte(12),packet:byte(13),packet:byte(14),last4E:byte(17),0x00,0x00):totable();
                 last4E = nil
-                timer.Once(math.random(), function()
-                    --print(string.format('modified %s  size [%d]',table.tostring(sell_confirm ,'%.2X '),#sell_confirm));
-                    AddOutgoingPacket(sell_confirm, 0x4E, #sell_confirm);
+                ashita.timer.once(math.random(), function()
+                    --print(string.format('modified %s  size [%d]',table.tostring(sell_confirm ,'%.2X ')));
+                    AddOutgoingPacket(0x4E, sell_confirm);
                 end);
             end
         elseif (pType == 0x0A) then
@@ -257,9 +257,9 @@ end;
 
 function find_item(item_id, item_count)
     local items = AshitaCore:GetDataManager():GetInventory();
-    for ind = 1,items:GetInventoryMax(0) do
-        local item = items:GetInventoryItem(0, ind);
-        if (item ~= nil and item.Id == item_id and item.Flag == 0 and item.Count >= item_count) then
+    for ind = 1,items:GetContainerMax(0) do
+        local item = items:GetItem(0, ind);
+        if (item ~= nil and item.Id == item_id and item.Flags == 0 and item.Count >= item_count) then
             return item.Index;
         end
     end
@@ -272,7 +272,7 @@ function clear_sales()
         if (auction_box[slot] ~= nil) and (auction_box[slot].status == 'Sold' or auction_box[slot].status == 'Not Sold') then
             local isold = struct.pack("bbxxbbi32i22", 0x4E,0x1E,0x10,slot,0x00,0x00):totable();
             --print(string.format('modified %s  size [%d]',table.tostring(isold, '%.2X '),#isold));
-            --AddOutgoingPacket(isold, 0x4E, #isold);
+            AddOutgoingPacket(0x4E, isold);
         end
     end
 end;
@@ -285,8 +285,8 @@ function ah_proposal(bid, name, vol, price)
         return false; 
     end
 
-    if (hasflag(item.Flags, ItemFlags['NoAuction']) == true) then
-        print(string.format('AH Error: %s is not purchasable via the auction house.',item.Name));
+    if (has_flag(item.Flags, ItemFlags['NoAuction']) == true) then
+        print(string.format('AH Error: %s is not purchasable via the auction house.',item.Name[0]));
         return false;
     end
 
@@ -298,14 +298,14 @@ function ah_proposal(bid, name, vol, price)
     else print('AH Error: Specify single or stack.'); 
         return false;
     end
-
+    
     price = price:gsub('%p', '');
     if (price == nil) or
       (string.match(price,'%a') ~= nil) or
       (tonumber(price) == nil) or
       (tonumber(price) < 1) or
       (bid == '/sell' and tonumber(price) > 999999999) or
-      (bid == '/buy' and tonumber(price) > AshitaCore:GetDataManager():GetInventory():GetInventoryItem(0,0).Count) then
+      (bid == '/buy' and tonumber(price) > AshitaCore:GetDataManager():GetInventory():GetItem(0,0).Count) then
         print('AH Error: Invalid price.');
         return false;
     end
@@ -314,8 +314,8 @@ function ah_proposal(bid, name, vol, price)
     local trans;
     if (bid == '/buy') then
         local slot = find_empty_slot() == nil and 0x07 or find_empty_slot();
-        trans = struct.pack("bbxxihxx", 0x0E, slot, price, item.ItemID);
-        --print(string.format('%s "%s" %s %s ID:%s',bid, item.Name, comma_value(price),single == 1 and '[Single]' or '[Stack]',item.ItemID));
+        trans = struct.pack("bbxxihxx", 0x0E, slot, price, item.ItemId);
+        print(string.format('%s "%s" %s %s ID:%s',bid, item.Name[0], comma_value(price),single == 1 and '[Single]' or '[Stack]',item.ItemId));
     elseif (bid == '/sell') then
         if (auction_box == nil) then
             print('AH Error: Click auction counter or use /ah to initialize sales.');
@@ -325,13 +325,13 @@ function ah_proposal(bid, name, vol, price)
             print('AH Error: No empty slots available.');
             return false;
         end
-        local index = find_item(item.ItemID, single == 1 and single or item.StackSize);
+        local index = find_item(item.ItemId, single == 1 and single or item.StackSize);
         if (index == nil) then 
             print(string.format('AH Error: %s of %s not found in inventory.',single == 1 and 'Single' or 'Stack',item.Name));
             return false;
         end
-        trans = struct.pack("bxxxihh", 0x04, price, index, item.ItemID);
-        --print(string.format('%s "%s" %s %s ID:%d Ind:%d',bid, item.Name, comma_value(price),single == 1 and '[Single]' or '[Stack]',item.ItemID,index));
+        trans = struct.pack("bxxxihh", 0x04, price, index, item.ItemId);
+        print(string.format('%s "%s" %s %s ID:%d Ind:%d',bid, item.Name[0], comma_value(price),single == 1 and '[Single]' or '[Stack]',item.ItemId,index));
     else return false; end
     trans = struct.pack("bbxx", 0x4E, 0x1E) .. trans .. struct.pack("bi32i11", single, 0x00, 0x00);
     if (bid == '/sell') then
@@ -339,6 +339,6 @@ function ah_proposal(bid, name, vol, price)
     end
     trans = trans:totable()
     --print(string.format('modified %s  size [%d]',table.tostring(trans, '%.2X '),#trans));
-    AddOutgoingPacket(trans, 0x4E, #trans);
+    AddOutgoingPacket(0x4E, trans);
     return true;
 end;
