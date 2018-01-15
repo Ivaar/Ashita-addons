@@ -1,11 +1,11 @@
 _addon.name = 'NPCit';
-_addon.version = '1.16.7.16';
+_addon.version = '1.18.01.14';
 _addon.author = 'Ivaar';
 
 require 'common';
-require 'packet';
 require 'timer';
 
+delay = 2
 sales_que = {};
 
 function table.find(t, val)
@@ -15,28 +15,19 @@ function table.find(t, val)
     return nil;
 end;
 
-function table.tostring(t, form)
-    str = ' ';
-    for x = 1,#t do
-        str = str..string.format(form,t[x]);
-    end
-    str = string.upper(str)..string.format('  size [%.2d]',#t);
-    return str;
-end;
-
 function hasflag(n, flag)
     return bit.band(n, flag) == flag;
 end;
 
 function itemName(id)
-   return AshitaCore:GetResourceManager():GetItemByID(tonumber(id)).Name[0];
+   return AshitaCore:GetResourceManager():GetItemById(tonumber(id)).Name[0];
 end;
 
 function find_item(item_id)
     local items = AshitaCore:GetDataManager():GetInventory();
-    for i = 1,items:GetInventoryMax(0) do
-        local item = items:GetInventoryItem(0, i);
-        if item ~= nil and item.Id == item_id and item.Flag == 0 then
+    for i = 1,items:GetContainerMax(0) do
+        local item = items:GetItem(0, i);
+        if item ~= nil and item.Id == item_id and item.Flags == 0 then
             return item.Index,item.Count;
         end
     end
@@ -66,14 +57,13 @@ function check_item(name)
 
     if hasflag(item.Flags, ItemFlags['NoSale']) then
         actions=nil;
-        print(string.format('Error: Cannot sell %s to npc vendors',item.Name));
-        return check_que(item.ItemID);
+        print(string.format('Error: Cannot sell %s to npc vendors',item.Name[0]));
+        return check_que(item.ItemId);
     end
-
-    table.insert(sales_que, item.ItemID);
+    table.insert(sales_que, item.ItemId);
     if actions == nil then 
         actions = true;
-        return sell_npc_item(item.ItemID);
+        return sell_npc_item(item.ItemId);
     end
 
     return false;
@@ -98,46 +88,34 @@ function sell_npc_item(item)
         count = 1; 
     end
     
-    local appraisal = struct.pack("bbxx bxxx hbx", 0x084, 0x06, count, item, index):totable();
-
-    --print(string.format('modified packet %s',table.tostring(appraisal, ' %.2x')));
-    AddOutgoingPacket(npcSale, 0x84, #npcSale);
+    AddOutgoingPacket(0x84, struct.pack("bbxxbxxxhbx", 0x084, 0x06, count, item, index):totable());
     
     if appraised[item] == nil then 
-        appraised[item] = true;
         return sell_loop(item);
     end
     
-    local confirm = struct.pack("bbxxbxxx", 0x085, 0x04, 0x01):totable();
-    --print(string.format('modified packet %s',table.tostring(confirm, ' %.2x')));
-    AddOutgoingPacket(confirm, 0x85, #confirm);
+    AddOutgoingPacket(0x85, struct.pack("bbxxbxxx", 0x085, 0x04, 0x01):totable());
     return sell_loop(item);
 end;
 
 function sell_loop(item)
-    timer.Once((1+math.random()), sell_npc_item, item);
+    ashita.timer.once(delay, sell_npc_item, item);
 end;
 
 ashita.register_event('incoming_packet', function(id, size, packet)
-    if (id == 0x3C) then
+    if id == 0x3C then
         appraised = {};
-        return false;
+    elseif id == 0x3D and appraised ~= nil then
+        appraised[AshitaCore:GetDataManager():GetInventory():GetItem(0, packet:byte(9)).Id] = true;
     end
-    __events_incoming_packet(id, size, packet);
-    return false;
-end);
-
-ashita.register_event('outgoing_packet', function(id, size, packet)
-    __events_outgoing_packet(id, size, packet);
     return false;
 end);
 
 ashita.register_event('command', function(cmd, nType)
-    local args = cmd:GetArgs();
-    if (string.lower(args[1]) ~= '/npcit') then 
+    local args = cmd:args();
+    if string.lower(args[1]) ~= '/npcit' then 
         return false;
     end
-    
     if args[2] ~= nil then
         check_item(table.concat(args,' ',2));
     elseif appraised ~= nil then
