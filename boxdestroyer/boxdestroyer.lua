@@ -29,7 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.name = 'boxdestroyer'
 _addon.version = '1.0.2'
-_addon.author = 'Seth VanHeulen (Acacia@Odin), Port to Ashita: Ivaar'
+_addon.author = 'Seth VanHeulen (Acacia@Odin)'
+
+-- Port to Ashita maintained by: Ivaar
 
 -- load message constants
 
@@ -99,15 +101,15 @@ end
 
 function display(id, chances)
     if #box[id] == 90 then
-        print('possible combinations: 10~99')
+        print('\31\207possible combinations: 10~99')
     else
-        print('possible combinations: ' .. table.concat(box[id], ' '))
+        print('\31\207possible combinations: ' .. table.concat(box[id], ' \31\207'))
     end
     local remaining = math.floor(#box[id] / math.pow(2, (chances - 1)))
     if remaining == 0 then
         remaining = 1
     end
-    print(string.format('best guess: %d (%d%%)',box[id][math.ceil(#box[id] / 2)], 1 / remaining * 100))
+    print(string.format('\31\207best guess: %d (%d%%)',box[id][math.ceil(#box[id] / 2)], 1 / remaining * 100))
 end
 
 -- ID obtaining helper function
@@ -118,31 +120,31 @@ end
 -- event callback functions
 
 function check_incoming_chunk(id, size, packet)
-    if messages[zone_id] then
-        if id == 0x0A then
-            zone_id = struct.unpack('h',packet, 49)
-        elseif id == 0x0B then
+    if id == 0x0A then
+        zone_id = struct.unpack('h',packet,49)
+    elseif messages[zone_id] then
+        if id == 0x0B then
             box = {}
         elseif id == 0x2A then
-            local box_id = struct.unpack('h',packet, 25)
-            local param0 = struct.unpack('i',packet, 9)
-            local param1 = struct.unpack('i',packet, 13)
-            local param2 = struct.unpack('i',packet, 17)
-            local message_id = struct.unpack('h',packet, 27) % 0x8000
-            if get_id(zone_id,'greater_less') == message_id then
+            local box_id = struct.unpack('h', packet, 25)
+            local param0 = struct.unpack('i', packet, 9)
+            local param1 = struct.unpack('i', packet, 13)
+            local param2 = struct.unpack('i', packet, 17)
+            local message_id = struct.unpack('h', packet, 27) % 0x8000
+            if get_id(zone_id, 'greater_less') == message_id then
                 box[box_id] = greater_less(box_id, param1 == 0, param0)
-            elseif get_id(zone_id,'second_even_odd') == message_id then
+            elseif get_id(zone_id, 'second_even_odd') == message_id then
                 box[box_id] = even_odd(box_id, 1, param0)
-            elseif get_id(zone_id,'first_even_odd') == message_id then
+            elseif get_id(zone_id, 'first_even_odd') == message_id then
                 box[box_id] = even_odd(box_id, 10, param0)
-            elseif get_id(zone_id,'range') == message_id then
+            elseif get_id(zone_id, 'range') == message_id then
                 box[box_id] = greater_less(box_id, true, param0)
                 box[box_id] = greater_less(box_id, false, param1)
-            elseif get_id(zone_id,'less') == message_id then
+            elseif get_id(zone_id, 'less') == message_id then
                 box[box_id] = greater_less(box_id, false, param0)
-            elseif get_id(zone_id,'greater') == message_id then
+            elseif get_id(zone_id, 'greater') == message_id then
                 box[box_id] = greater_less(box_id, true, param0)
-            elseif get_id(zone_id,'equal') == message_id then
+            elseif get_id(zone_id, 'equal') == message_id then
                 local new = equal(box_id, true, param0)
                 local duplicate = param0 * 10 + param0
                 for k,v in pairs(new) do
@@ -165,7 +167,7 @@ function check_incoming_chunk(id, size, packet)
                 for _,v in pairs(equal(box_id, true, param2)) do table.insert(new, v) end
                 table.sort(new)
                 box[box_id] = new
-            elseif get_id(zone_id,'success') == message_id or get_id(zone_id,'failure') == message_id then
+            elseif get_id(zone_id, 'success') == message_id or get_id(zone_id, 'failure') == message_id then
                 box[box_id] = nil
             end
         elseif id == 0x34 then
@@ -180,7 +182,7 @@ function check_incoming_chunk(id, size, packet)
                 end
             end
         elseif id == 0x5B then
-            box[struct.unpack('i',packet, 17)] = nil
+            box[struct.unpack('i', packet, 17)] = nil
         end
     end
     return false
