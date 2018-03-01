@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.author = 'Ivaar';
 _addon.name = 'SkillChains';
-_addon.version = '1.18.01.24';
+_addon.version = '1.18.03.01';
 
 require 'common';
 require 'timer';
@@ -261,7 +261,7 @@ ashita.register_event('render', function()
             if setting.step then
                 table.insert(resonating[targ_id].disp_info, string.format('Step: %d >> %s', resonating[targ_id].step, resonating[targ_id].en));
             end
-            local props = setting.props and colorize(resonating[targ_id].active) or string.format('Chainbound Lv.%d', resonating[targ_id].bound);
+            local props = setting.props and (not resonating[targ_id].bound and colorize(resonating[targ_id].active) or string.format('Chainbound Lv.%d', resonating[targ_id].bound));
             local burst = setting.burst and resonating[targ_id].step > 1 and colorize(sc_info[resonating[targ_id].active[1]].ele);
             if props and burst then
                 table.insert(resonating[targ_id].disp_info, string.format('[%s] (%s)', props, burst));
