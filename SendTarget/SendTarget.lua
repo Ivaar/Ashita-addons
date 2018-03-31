@@ -31,15 +31,14 @@ _addon.version = '1.0.0.0';
 _addon.author = 'Ivaar';
 
 require 'common'
-require 'events'
-target = require('ffxi.target');
+target = require('ffxi.targets');
 
 ---------------------------------------------------------------------------------------------------
 -- func: command
 -- desc: Called when our addon receives a command.
 ---------------------------------------------------------------------------------------------------
 ashita.register_event('command', function(cmd, nType)
-    local args = cmd:GetArgs();
+    local args = cmd:args();
     if (args[1] ~= '/sendtarget' and args[1] ~= '/st') then
         return false;
     end
@@ -60,10 +59,13 @@ ashita.register_event('command', function(cmd, nType)
     if (args[4]:startswith('/') == false) then
         args[4] = '/' .. args[4];
     end
-    
-    local entity = get_target('lastst');
-    if (entity ~= nil) then
-        local str = '/servo sendto '.. table.concat(args,' ',3) ..' '.. entity.ServerID;
+	
+	local target = AshitaCore:GetDataManager():GetTarget();
+    local tid = target:GetSubTargetServerId();
+    local tidx = target:GetSubTargetIndex();
+	
+    if (target ~= nil) then
+        local str = '/ms sendto '.. table.concat(args,' ',3) ..' '.. tid .. ' ' .. tidx;
         AshitaCore:GetChatManager():QueueCommand(str, -1);
     else
         print(string.format('Could not find last sub-target. No action performed...'));
