@@ -60,12 +60,10 @@ ashita.register_event('command', function(cmd, nType)
         args[4] = '/' .. args[4];
     end
 	
-	local target = AshitaCore:GetDataManager():GetTarget();
-    local tid = target:GetSubTargetServerId();
-    local tidx = target:GetSubTargetIndex();
+    local target = AshitaCore:GetDataManager():GetTarget():GetSubTargetServerId()
 	
     if (target ~= nil) then
-        local str = '/ms sendto '.. table.concat(args,' ',3) ..' '.. tid .. ' ' .. tidx;
+        local str = '/ms sendto '.. table.concat(args,' ',3) ..' '.. target;
         AshitaCore:GetChatManager():QueueCommand(str, -1);
     else
         print(string.format('Could not find last sub-target. No action performed...'));
