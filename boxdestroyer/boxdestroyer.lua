@@ -28,12 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -- addon information
 
 _addon.name = 'boxdestroyer'
-_addon.version = '1.0.3'
+_addon.version = '1.0.4'
 _addon.author = 'Seth VanHeulen (Acacia@Odin)'
 
 -- Port to Ashita maintained by: Ivaar
 
 -- load message constants
+require('common')
 
 require('messages')
 
@@ -133,17 +134,17 @@ end
 
 function check_incoming_chunk(id, size, packet)
     if id == 0x0A then
-        zone_id = struct.unpack('h',packet,49)
+        zone_id = struct.unpack('H',packet,49)
     elseif messages[zone_id] then
         if id == 0x0B then
             box = {}
             range = {}
         elseif id == 0x2A then
-            local box_id = struct.unpack('h', packet, 25)
-            local param0 = struct.unpack('i', packet, 9)
-            local param1 = struct.unpack('i', packet, 13)
-            local param2 = struct.unpack('i', packet, 17)
-            local message_id = struct.unpack('h', packet, 27) % 0x8000
+            local box_id = struct.unpack('I', packet, 5)
+            local param0 = struct.unpack('I', packet, 9)
+            local param1 = struct.unpack('I', packet, 13)
+            local param2 = struct.unpack('I', packet, 17)
+            local message_id = struct.unpack('H', packet, 27) % 0x8000
             if get_id(zone_id, 'greater_less') == message_id then
                 box[box_id] = greater_less(box_id, param1 == 0, param0)
             elseif get_id(zone_id, 'second_even_odd') == message_id then
@@ -201,15 +202,15 @@ function check_incoming_chunk(id, size, packet)
             elseif get_id(zone_id, 'success') == message_id or get_id(zone_id, 'failure') == message_id then
                 box[box_id] = nil
             end
-        elseif id == 0x34 and locked_box_menu(struct.unpack('h', packet, 0x2D)) then
-            local box_id = struct.unpack('h', packet, 41)
+        elseif id == 0x34 and locked_box_menu(struct.unpack('H', packet, 0x2D)) then
+            local box_id = struct.unpack('H', packet, 41)
             if box[box_id] == nil then
                 box[box_id] = default
             end
             display(box_id, packet:byte(9))
         elseif id == 0x5B then
-            box[struct.unpack('i', packet, 17)] = nil
-            range[struct.unpack('i', packet, 17)] = nil
+            box[struct.unpack('I', packet, 17)] = nil
+            range[struct.unpack('I', packet, 17)] = nil
         end
     end
     return false
@@ -219,19 +220,19 @@ function check_outgoing_chunk(id, size, packet)
     if not messages[zone_id] then return false end
 
     if id == 0x036 and
-        GetEntity(struct.unpack('i', packet, 0x05)).Name == 'Treasure Casket' and -- models[1] == 966
-        jobs[AshitaCore:GetDataManager():GetPlayer():GetMainJob()] == 'THF' then
+        GetEntity(struct.unpack('H', packet, 0x29)).Name == 'Treasure Casket' and -- models[1] == 966
+        AshitaCore:GetDataManager():GetPlayer():GetMainJob() == 6 then
 
         for i = 1,9 do
             local num = range_mods[AshitaCore:GetDataManager():GetInventory():GetItem(0, packet:byte(0x30+i)).Id]
             if num then
-                range[struct.unpack('i', packet, 0x05)] = num
+                range[struct.unpack('I', packet, 0x05)] = num
                 break
             end
         end
-    elseif id == 0x05B and locked_box_menu(struct.unpack('h', packet, 0x13)) and struct.unpack('i', packet, 0x09) == 258 then
+    elseif id == 0x05B and locked_box_menu(struct.unpack('H', packet, 0x13)) and struct.unpack('I', packet, 0x09) == 258 then
         -- examine the chest
-        range[struct.unpack('i', packet, 0x05)] = 5
+        range[struct.unpack('I', packet, 0x05)] = 5
     end
     return false
 end
