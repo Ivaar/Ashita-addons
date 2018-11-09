@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -- addon information
 
 _addon.name = 'boxdestroyer'
-_addon.version = '1.0.2'
+_addon.version = '1.0.3'
 _addon.author = 'Seth VanHeulen (Acacia@Odin)'
 
 -- Port to Ashita maintained by: Ivaar
@@ -51,9 +51,15 @@ default = {
     90, 91, 92, 93, 94, 95, 96, 97, 98, 99
 }
 
+range_mods = {
+    [1022] = 8, -- 8, 32 -- thiefs tools
+    [1023] = 6, -- 6, 24 -- living key
+    [1115] = 4, -- 4, 16 -- skeleton key
+}
 -- global variables
 
 box = {}
+range = {}
 zone_id = AshitaCore:GetDataManager():GetParty():GetMemberZone(0)
 
 -- filter helper functions
@@ -112,6 +118,12 @@ function display(id, chances)
     print(string.format('\31\207best guess: %d (%d%%)',box[id][math.ceil(#box[id] / 2)], 1 / remaining * 100))
 end
 
+function locked_box_menu(menu_id)
+    if menu_id > 999 and menu_id < 1048 then
+        return menu_id % 3 == 0
+    end
+end
+
 -- ID obtaining helper function
 function get_id(zone_id,str)
     return messages[zone_id] + offsets[str]
@@ -125,6 +137,7 @@ function check_incoming_chunk(id, size, packet)
     elseif messages[zone_id] then
         if id == 0x0B then
             box = {}
+            range = {}
         elseif id == 0x2A then
             local box_id = struct.unpack('h', packet, 25)
             local param0 = struct.unpack('i', packet, 9)
@@ -138,12 +151,30 @@ function check_incoming_chunk(id, size, packet)
             elseif get_id(zone_id, 'first_even_odd') == message_id then
                 box[box_id] = even_odd(box_id, 10, param0)
             elseif get_id(zone_id, 'range') == message_id then
-                box[box_id] = greater_less(box_id, true, param0)
-                box[box_id] = greater_less(box_id, false, param1)
-            elseif get_id(zone_id, 'less') == message_id then
-                box[box_id] = greater_less(box_id, false, param0)
-            elseif get_id(zone_id, 'greater') == message_id then
-                box[box_id] = greater_less(box_id, true, param0)
+                -- lower bound (param0) = solution - RANDINT(5,20)
+                -- upper bound (param1) = solution + RANDINT(5,20)
+                -- param0 + 21 > solution > param0 + 4
+                -- param1 - 4  > solution > param1 - 21
+
+                -- Thief tools are the same as normal ranges but with larger bounds.
+                -- lower bound (param0) = solution - RANDINT(8,32)
+                -- upper bound (param1) = solution + RANDINT(8,32)
+                -- param0 + 33 > solution > param0 + 7
+                -- param1 - 7  > solution > param1 - 33
+
+                -- if the bound is less than 11 or greater than 98, the message changes to "greater" or "less" respectively
+                box[box_id] = greater_less(box_id, true, math.max(param1-4*range[box_id],param0+range[box_id]) - 1)
+                box[box_id] = greater_less(box_id, false, math.min(param0+4*range[box_id],param1-range[box_id]) + 1)
+                observed[box_id].range = true
+            elseif get_id(zone_id,'less') == message_id then
+                -- Less is a range with 9 as the lower bound
+                box[box_id] = greater_less(box_id, true, math.max(param0-4*range[box_id], 10) - 1)
+                box[box_id] = greater_less(box_id, false, math.min(10+4*range[box_id],param0-range[box_id]) + 1)
+                observed[box_id].range = true
+            elseif get_id(zone_id,'greater') == message_id then
+                -- Greater is a range with 100 as the upper bound
+                box[box_id] = greater_less(box_id, true, math.max(99-4*range[box_id],param0+range[box_id]) - 1)
+                box[box_id] = greater_less(box_id, false, math.min(param0+4*range[box_id], 99) + 1)
             elseif get_id(zone_id, 'equal') == message_id then
                 local new = equal(box_id, true, param0)
                 local duplicate = param0 * 10 + param0
@@ -170,24 +201,41 @@ function check_incoming_chunk(id, size, packet)
             elseif get_id(zone_id, 'success') == message_id or get_id(zone_id, 'failure') == message_id then
                 box[box_id] = nil
             end
-        elseif id == 0x34 then
-            local box_id = struct.unpack('h',packet, 41)
-            if GetEntity(box_id).Name == 'Treasure Casket' then
-                local chances = packet:byte(9)
-                if box[box_id] == nil then
-                    box[box_id] = default
-                end
-                if chances > 0 and chances < 7 then
-                    display(box_id, chances)
-                end
+        elseif id == 0x34 and locked_box_menu(struct.unpack('h', packet, 0x2D)) then
+            local box_id = struct.unpack('h', packet, 41)
+            if box[box_id] == nil then
+                box[box_id] = default
             end
+            display(box_id, packet:byte(9))
         elseif id == 0x5B then
             box[struct.unpack('i', packet, 17)] = nil
+            range[struct.unpack('i', packet, 17)] = nil
         end
     end
     return false
 end
 
+function check_outgoing_chunk(id, size, packet)
+    if not messages[zone_id] then return false end
+
+    if id == 0x036 and
+        GetEntity(struct.unpack('i', packet, 0x05)).Name == 'Treasure Casket' and -- models[1] == 966
+        jobs[AshitaCore:GetDataManager():GetPlayer():GetMainJob()] == 'THF' then
+
+        for i = 1,9 do
+            local num = range_mods[AshitaCore:GetDataManager():GetInventory():GetItem(0, packet:byte(0x30+i)).Id]
+            if num then
+                range[struct.unpack('i', packet, 0x05)] = num
+                break
+            end
+        end
+    elseif id == 0x05B and locked_box_menu(struct.unpack('h', packet, 0x13)) and struct.unpack('i', packet, 0x09) == 258 then
+        -- examine the chest
+        range[struct.unpack('i', packet, 0x05)] = 5
+    end
+    return false
+end
 -- register event callbacks
 
 ashita.register_event('incoming_packet', check_incoming_chunk)
+ashita.register_event('outgoing_packet', check_outgoing_chunk)
