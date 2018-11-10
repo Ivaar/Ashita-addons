@@ -166,12 +166,10 @@ function check_incoming_chunk(id, size, packet)
                 -- if the bound is less than 11 or greater than 98, the message changes to "greater" or "less" respectively
                 box[box_id] = greater_less(box_id, true, math.max(param1-4*range[box_id],param0+range[box_id]) - 1)
                 box[box_id] = greater_less(box_id, false, math.min(param0+4*range[box_id],param1-range[box_id]) + 1)
-                observed[box_id].range = true
             elseif get_id(zone_id,'less') == message_id then
                 -- Less is a range with 9 as the lower bound
                 box[box_id] = greater_less(box_id, true, math.max(param0-4*range[box_id], 10) - 1)
                 box[box_id] = greater_less(box_id, false, math.min(10+4*range[box_id],param0-range[box_id]) + 1)
-                observed[box_id].range = true
             elseif get_id(zone_id,'greater') == message_id then
                 -- Greater is a range with 100 as the upper bound
                 box[box_id] = greater_less(box_id, true, math.max(99-4*range[box_id],param0+range[box_id]) - 1)
@@ -203,7 +201,7 @@ function check_incoming_chunk(id, size, packet)
                 box[box_id] = nil
             end
         elseif id == 0x34 and locked_box_menu(struct.unpack('H', packet, 0x2D)) then
-            local box_id = struct.unpack('H', packet, 41)
+            local box_id = struct.unpack('I', packet, 5)
             if box[box_id] == nil then
                 box[box_id] = default
             end
@@ -219,15 +217,17 @@ end
 function check_outgoing_chunk(id, size, packet)
     if not messages[zone_id] then return false end
 
-    if id == 0x036 and
-        GetEntity(struct.unpack('H', packet, 0x29)).Name == 'Treasure Casket' and -- models[1] == 966
-        AshitaCore:GetDataManager():GetPlayer():GetMainJob() == 6 then
+    if id == 0x036 then
+        local box_index = struct.unpack('H', packet, 0x3B)
 
-        for i = 1,9 do
-            local num = range_mods[AshitaCore:GetDataManager():GetInventory():GetItem(0, packet:byte(0x30+i)).Id]
-            if num then
-                range[struct.unpack('I', packet, 0x05)] = num
-                break
+        if GetEntity(box_index).Name == 'Treasure Casket' and AshitaCore:GetDataManager():GetPlayer():GetMainJob() == 6 then
+
+            for i = 1,9 do
+                local num = range_mods[AshitaCore:GetDataManager():GetInventory():GetItem(0, packet:byte(0x30+i)).Id]
+                if num then
+                    range[struct.unpack('I', packet, 0x05)] = num
+                    break
+                end
             end
         end
     elseif id == 0x05B and locked_box_menu(struct.unpack('H', packet, 0x13)) and struct.unpack('I', packet, 0x09) == 258 then
