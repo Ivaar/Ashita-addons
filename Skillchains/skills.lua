@@ -1,3 +1,30 @@
+--[[
+Copyright © 2017, Ivaar
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+* Neither the name of SkillChains nor the
+  names of its contributors may be used to endorse or promote products
+  derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL IVAAR BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+]]
 local skills = {}
 
 skills[3] = {
@@ -15,7 +42,7 @@ skills[3] = {
     [12] = {en='Stringing Pummel',skillchain={'Gravitation','Liquefaction'}},
     [13] = {en='Tornado Kick',skillchain={'Induration','Detonation','Impaction'}},
     [14] = {en='Victory Smite',skillchain={'Light','Fragmentation'}},
-    [15] = {en='Shijin Spiral',skillchain={'Fusion','Reverberation'},aeonic='Light'},
+    [15] = {en='Shijin Spiral',skillchain={'Fusion','Reverberation'},aeonic='Light',weapon='Godhand'},
     [16] = {en='Wasp Sting',skillchain={'Scission'}},
     [17] = {en='Viper Bite',skillchain={'Scission'}},
     [18] = {en='Shadowstitch',skillchain={'Reverberation'}},
@@ -56,7 +83,7 @@ skills[3] = {
     [57] = {en='Scourge',skillchain={'Light','Fusion'}},
     [58] = {en='Herculean Slash',skillchain={'Induration','Detonation','Impaction'}},
     [59] = {en='Torcleaver',skillchain={'Light','Distortion'}},
-    [60] = {en='Resolution',skillchain={'Fragmentation','Scission'},aeonic='Light'},
+    [60] = {en='Resolution',skillchain={'Fragmentation','Scission'},aeonic='Light',weapon='Lionheart'},
     [61] = {en='Dimidiation',skillchain={'Light','Fragmentation'}},
     [64] = {en='Raging Axe',skillchain={'Detonation','Impaction'}},
     [65] = {en='Smash Axe',skillchain={'Induration','Reverberation'}},
@@ -71,7 +98,7 @@ skills[3] = {
     [74] = {en='Primal Rend',skillchain={'Gravitation','Reverberation'}},
     [75] = {en='Bora Axe',skillchain={'Scission','Detonation'}},
     [76] = {en='Cloudsplitter',skillchain={'Darkness','Fragmentation'}},
-    [77] = {en='Ruinator',skillchain={'Distortion','Detonation'},aeonic='Darkness'},
+    [77] = {en='Ruinator',skillchain={'Distortion','Detonation'},aeonic='Darkness',weapon='Tri-Edge'},
     [80] = {en='Shield Break',skillchain={'Impaction'}},
     [81] = {en='Iron Tempest',skillchain={'Scission'}},
     [82] = {en='Sturmwind',skillchain={'Reverberation','Scission'}},
@@ -85,7 +112,7 @@ skills[3] = {
     [90] = {en='King\'s Justice',skillchain={'Fragmentation','Scission'}},
     [91] = {en='Fell Cleave',skillchain={'Scission','Detonation','Impaction'}},
     [92] = {en='Ukko\'s Fury',skillchain={'Light','Fragmentation'}},
-    [93] = {en='Upheaval',skillchain={'Fusion','Compression'},aeonic='Light'},
+    [93] = {en='Upheaval',skillchain={'Fusion','Compression'},aeonic='Light',weapon='Chango'},
     [96] = {en='Slice',skillchain={'Scission'}},
     [97] = {en='Dark Harvest',skillchain={'Reverberation'}},
     [98] = {en='Shadow of Death',skillchain={'Induration','Reverberation'}},
@@ -99,7 +126,7 @@ skills[3] = {
     [106] = {en='Insurgency',skillchain={'Fusion','Compression'}},
     [107] = {en='Infernal Scythe',skillchain={'Compression','Reverberation'}},
     [108] = {en='Quietus',skillchain={'Darkness','Distortion'}},
-    [109] = {en='Entropy',skillchain={'Gravitation','Reverberation'},aeonic='Darkness'},
+    [109] = {en='Entropy',skillchain={'Gravitation','Reverberation'},aeonic='Darkness',weapon='Anguta'},
     [112] = {en='Double Thrust',skillchain={'Transfixion'}},
     [113] = {en='Thunder Thrust',skillchain={'Transfixion','Impaction'}},
     [114] = {en='Raiden Thrust',skillchain={'Transfixion','Impaction'}},
@@ -113,7 +140,7 @@ skills[3] = {
     [122] = {en='Drakesbane',skillchain={'Fusion','Transfixion'}},
     [123] = {en='Sonic Thrust',skillchain={'Transfixion','Scission'}},
     [124] = {en='Camlann\'s Torment',skillchain={'Light','Fragmentation'}},
-    [125] = {en='Stardiver',skillchain={'Gravitation','Transfixion'},aeonic='Darkness'},
+    [125] = {en='Stardiver',skillchain={'Gravitation','Transfixion'},aeonic='Darkness',weapon='Trishula'},
     [128] = {en='Blade: Rin',skillchain={'Transfixion'}},
     [129] = {en='Blade: Retsu',skillchain={'Scission'}},
     [130] = {en='Blade: Teki',skillchain={'Reverberation'}},
@@ -127,7 +154,7 @@ skills[3] = {
     [138] = {en='Blade: Kamu',skillchain={'Fragmentation','Compression'}},
     [139] = {en='Blade: Yu',skillchain={'Reverberation','Scission'}},
     [140] = {en='Blade: Hi',skillchain={'Darkness','Gravitation'}},
-    [141] = {en='Blade: Shun',skillchain={'Fusion','Impaction'},aeonic='Light'},
+    [141] = {en='Blade: Shun',skillchain={'Fusion','Impaction'},aeonic='Light',weapon='Heishi Shorinken'},
     [144] = {en='Tachi: Enpi',skillchain={'Transfixion','Scission'}},
     [145] = {en='Tachi: Hobaku',skillchain={'Induration'}},
     [146] = {en='Tachi: Goten',skillchain={'Transfixion','Impaction'}},
@@ -141,7 +168,8 @@ skills[3] = {
     [154] = {en='Tachi: Rana',skillchain={'Gravitation','Induration'}},
     [155] = {en='Tachi: Ageha',skillchain={'Compression','Scission'}},
     [156] = {en='Tachi: Fudo',skillchain={'Light','Distortion'}},
-    [157] = {en='Tachi: Shoha',skillchain={'Fragmentation','Compression'},aeonic='Light'},
+    [157] = {en='Tachi: Shoha',skillchain={'Fragmentation','Compression'},aeonic='Light',weapon='Dojikiri Yasutsuna'},
+    [158] = {en='Tachi: Suikawari',skillchain={'Fusion'}},
     [160] = {en='Shining Strike',skillchain={'Impaction'}},
     [161] = {en='Seraph Strike',skillchain={'Impaction'}},
     [162] = {en='Brainshaker',skillchain={'Reverberation'}},
@@ -152,7 +180,7 @@ skills[3] = {
     [169] = {en='Black Halo',skillchain={'Fragmentation','Compression'}},
     [170] = {en='Randgrith',skillchain={'Light','Fragmentation'}},
     [172] = {en='Flash Nova',skillchain={'Induration','Reverberation'}},
-    [174] = {en='Realmrazer',skillchain={'Fusion','Impaction'},aeonic='Light'},
+    [174] = {en='Realmrazer',skillchain={'Fusion','Impaction'},aeonic='Light',weapon='Tishtrya'},
     [175] = {en='Exudation',skillchain={'Darkness','Fragmentation'}},
     [176] = {en='Heavy Swing',skillchain={'Impaction'}},
     [177] = {en='Rock Crusher',skillchain={'Impaction'}},
@@ -167,7 +195,7 @@ skills[3] = {
     [187] = {en='Garland of Bliss',skillchain={'Fusion','Reverberation'}},
     [188] = {en='Omniscience',skillchain={'Gravitation','Transfixion'}},
     [189] = {en='Cataclysm',skillchain={'Compression','Reverberation'}},
-    [191] = {en='Shattersoul',skillchain={'Gravitation','Induration'},aeonic='Darkness'},
+    [191] = {en='Shattersoul',skillchain={'Gravitation','Induration'},aeonic='Darkness',weapon='Khatvanga'},
     [192] = {en='Flaming Arrow',skillchain={'Liquefaction','Transfixion'}},
     [193] = {en='Piercing Arrow',skillchain={'Reverberation','Transfixion'}},
     [194] = {en='Dulling Arrow',skillchain={'Liquefaction','Transfixion'}},
@@ -178,7 +206,7 @@ skills[3] = {
     [200] = {en='Namas Arrow',skillchain={'Light','Distortion'}},
     [201] = {en='Refulgent Arrow',skillchain={'Reverberation','Transfixion'}},
     [202] = {en='Jishnu\'s Radiance',skillchain={'Light','Fusion'}},
-    [203] = {en='Apex Arrow',skillchain={'Fragmentation','Transfixion'},aeonic='Light'},
+    [203] = {en='Apex Arrow',skillchain={'Fragmentation','Transfixion'},aeonic='Light',weapon='Fail-Not'},
     [208] = {en='Hot Shot',skillchain={'Liquefaction','Transfixion'}},
     [209] = {en='Split Shot',skillchain={'Reverberation','Transfixion'}},
     [210] = {en='Sniper Shot',skillchain={'Liquefaction','Transfixion'}},
@@ -191,11 +219,12 @@ skills[3] = {
     [218] = {en='Leaden Salute',skillchain={'Gravitation','Transfixion'}},
     [219] = {en='Numbing Shot',skillchain={'Induration','Detonation','Impaction'}},
     [220] = {en='Wildfire',skillchain={'Darkness','Gravitation'}},
-    [221] = {en='Last Stand',skillchain={'Fusion','Reverberation'},aeonic='Light'},
-    [224] = {en='Exenterator',skillchain={'Fragmentation','Scission'},aeonic='Light'},
+    [221] = {en='Last Stand',skillchain={'Fusion','Reverberation'},aeonic='Light',weapon='Fomalhaut'},
+    [224] = {en='Exenterator',skillchain={'Fragmentation','Scission'},aeonic='Light',weapon='Aeneas'},
     [225] = {en='Chant du Cygne',skillchain={'Light','Distortion'}},
-    [226] = {en='Requiescat',skillchain={'Gravitation','Scission'},aeonic='Darkness'},
+    [226] = {en='Requiescat',skillchain={'Gravitation','Scission'},aeonic='Darkness',weapon='Sequence'},
     [227] = {en='Knights of Rotund',skillchain={'Light'}},
+    [228] = {en='Final Paradise',skillchain={'Light'}},
     [238] = {en='Uriel Blade',skillchain={'Light','Fragmentation'}},
     [239] = {en='Glory Slash',skillchain={'Light','Fusion'}},
     }
@@ -275,7 +304,7 @@ skills[4] = {
     [643] = {en='Cannonball',skillchain={'Fusion'}},
     [650] = {en='Seedspray',skillchain={'Induration','Detonation'}},
     [652] = {en='Spiral Spin',skillchain={'Transfixion'}},
-    [653] = {en='Asuran Claws',skillchain={'Impaction','Liquefaction'}},
+    [653] = {en='Asuran Claws',skillchain={'Liquefaction','Impaction'}},
     [654] = {en='Sub\-zero Smash',skillchain={'Fragmentation'}},
     [665] = {en='Final Sting',skillchain={'Fusion'}},
     [666] = {en='Goblin Rush',skillchain={'Fusion','Impaction'}},
@@ -345,6 +374,7 @@ skills[11] = {
     [986] = {en='Vortex',skillchain={'Distortion','Reverberation'}},
     [987] = {en='Shockwave',skillchain={'Reverberation'}},
     [1027] = {en='Combo',skillchain={'Impaction'}},
+    [1029] = {en='One-Ilm Punch',skillchain={'Compression'}},
     [1030] = {en='Backhand Blow',skillchain={'Detonation'}},
     [1031] = {en='Spinning Attack',skillchain={'Liquefaction','Impaction'}},
     [1032] = {en='Howling Fist',skillchain={'Transfixion','Impaction'}},
@@ -391,7 +421,7 @@ skills[11] = {
     [1854] = {en='Stellar Burst',skillchain={'Gravitation'}},
     [1914] = {en='Great Wheel',skillchain={'Fragmentation','Scission'}},
     [1936] = {en='Shibaraku',skillchain={'Gravitation'}},
-    [1940] = {en='Chimera Ripper',skillchain={'Detonation','Induration'}},
+    [1940] = {en='Chimera Ripper',skillchain={'Compression','Reverberation'}},
     [1941] = {en='String Clipper',skillchain={'Scission'}},
     [1942] = {en='Arcuballista',skillchain={'Liquefaction','Transfixion'}},
     [1943] = {en='Slapstick',skillchain={'Reverberation','Impaction'}},
@@ -401,10 +431,11 @@ skills[11] = {
     [2001] = {en='Happobarai',skillchain={'Reverberation','Impaction'}},
     [2065] = {en='Cannibal Blade',skillchain={'Compression','Reverberation'}},
     [2066] = {en='Daze',skillchain={'Transfixion'}},
-    [2067] = {en='Knockout',skillchain={'Detonation','Scission'}},
+    [2067] = {en='Knockout',skillchain={'Scission','Detonation'}},
     [2091] = {en='Meteoric Impact',skillchain={'Fragmentation'}},
     [2137] = {en='Meteoric Impact',skillchain={'Fragmentation'}},
     [2140] = {en='Peacebreaker',skillchain={'Distortion','Reverberation'}},
+    [2272] = {en='Bear Killer',skillchain={'Impaction'}},
     [2273] = {en='Uriel Blade',skillchain={'Light','Fragmentation'}},
     [2278] = {en='Glory Slash',skillchain={'Light','Fusion'}},
     [2299] = {en='Bone Crusher',skillchain={'Fragmentation'}},
@@ -421,7 +452,7 @@ skills[11] = {
     [2594] = {en='Quietus Sphere',skillchain={'Fragmentation'}},
     [2743] = {en='String Shredder',skillchain={'Distortion','Scission'}},
     [2744] = {en='Armor Shatterer',skillchain={'Fusion','Impaction'}},
-    [2891] = {en='Grapeshot',skillchain={'Transfixion','Reverberation'}},
+    [2891] = {en='Grapeshot',skillchain={'Reverberation','Transfixion'}},
     [2892] = {en='Pirate Pummel',skillchain={'Fusion','Impaction'}},
     [2893] = {en='Powder Keg',skillchain={'Fusion','Compression'}},
     [2894] = {en='Walk the Plank',skillchain={'Fragmentation','Distortion'}},
@@ -445,7 +476,7 @@ skills[11] = {
     [3190] = {en='Red Lotus Blade',skillchain={'Liquefaction','Detonation'}},
     [3192] = {en='Vorpal Blade',skillchain={'Scission','Impaction'}},
     [3197] = {en='Ground Strike',skillchain={'Fragmentation','Distortion'}},
-    [3198] = {en='Grapeshot',skillchain={'Transfixion','Reverberation'}},
+    [3198] = {en='Grapeshot',skillchain={'Reverberation','Transfixion'}},
     [3199] = {en='Pirate Pummel',skillchain={'Fusion','Impaction'}},
     [3200] = {en='Powder Keg',skillchain={'Fusion','Compression'}},
     [3201] = {en='Walk the Plank',skillchain={'Fragmentation','Distortion'}},
@@ -473,6 +504,7 @@ skills[11] = {
     [3257] = {en='Shibaraku',skillchain={'Gravitation'}},
     [3259] = {en='Happobarai',skillchain={'Reverberation','Impaction'}},
     [3262] = {en='Goblin Rush',skillchain={'Fusion','Impaction'}},
+    [3263] = {en='Bear Killer',skillchain={'Impaction'}},
     [3283] = {en='Iniquitous Stab',skillchain={'Gravitation'}},
     [3284] = {en='Shockstorm Edge',skillchain={'Detonation'}},
     [3286] = {en='Lock and Load',skillchain={'Fusion'}},
@@ -492,6 +524,7 @@ skills[11] = {
     [3411] = {en='Power Slash',skillchain={'Transfixion'}},
     [3412] = {en='Freezebite',skillchain={'Induration','Detonation'}},
     [3413] = {en='Combo',skillchain={'Impaction'}},
+    [3414] = {en='One-Ilm Punch',skillchain={'Compression'}},
     [3415] = {en='Howling Fist',skillchain={'Transfixion','Impaction'}},
     [3416] = {en='Dragon Kick',skillchain={'Fragmentation'}},
     [3417] = {en='Asuran Fists',skillchain={'Gravitation','Liquefaction'}},
@@ -510,7 +543,7 @@ skills[11] = {
     [3437] = {en='Tachi: Kasha',skillchain={'Fusion','Compression'}},
     [3438] = {en='Dragon Breath',skillchain={'Fusion'}},
     [3439] = {en='Hurricane Wing',skillchain={'Detonation'}},
-    [3445] = {en='Merciless Strike',skillchain={'Impaction'}},
+    [3445] = {en='Merciless Strike',skillchain={'Detonation','Impaction'}},
     [3448] = {en='Uppercut',skillchain={'Liquefaction','Impaction'}},
     [3454] = {en='Coming Up Roses',skillchain={'Fragmentation'}},
     [3468] = {en='Binding Microtube',skillchain={'Distortion'}},
@@ -523,7 +556,7 @@ skills[11] = {
     [3488] = {en='Arching Arrow',skillchain={'Fusion'}},
     [3489] = {en='Stellar Arrow',skillchain={'Darkness','Gravitation'}},
     [3490] = {en='Lux Arrow',skillchain={'Light','Fusion'}},
-    [3491] = {en='Grapeshot',skillchain={'Transfixion','Reverberation'}},
+    [3491] = {en='Grapeshot',skillchain={'Reverberation','Transfixion'}},
     [3492] = {en='Pirate Pummel',skillchain={'Fusion','Impaction'}},
     [3493] = {en='Powder Keg',skillchain={'Fusion','Compression'}},
     [3494] = {en='Walk the Plank',skillchain={'Fragmentation','Distortion'}},
@@ -564,7 +597,7 @@ skills[11] = {
     [3633] = {en='Sinner\'s Cross',skillchain={'Gravitation'}},
     [3634] = {en='Open Coffin',skillchain={'Fusion'}},
     [3645] = {en='Inexorable Strike',skillchain={'Fusion'}},
-    [3647] = {en='Merciless Strike',skillchain={'Impaction'}},
+    [3647] = {en='Merciless Strike',skillchain={'Detonation','Impaction'}},
     [3653] = {en='Tartaric Sigil',skillchain={'Compression','Scission'}},
     [3654] = {en='Null Field',skillchain={'Fusion','Transfixion'}},
     [3655] = {en='Alabaster Burst',skillchain={'Distortion','Detonation'}},
@@ -654,7 +687,10 @@ skills[11] = {
     [3938] = {en='Somersault',skillchain={'Compression'}},
     [3941] = {en='Pecking Flurry',skillchain={'Transfixion'}},
     [3942] = {en='Sickle Slash',skillchain={'Transfixion'}},
-    [4040] = {en='Howling Moon',skillchain={'Darkness','Gravitation'}},
+    [4211] = {en='Iniquitous Stab',skillchain={'Gravitation'}},
+    [4212] = {en='Shockstorm Edge',skillchain={'Detonation'}},
+    [4214] = {en='Lock and Load',skillchain={'Fusion'}},
+    [4158] = {en='Blade: Metsu',skillchain={'Darkness','Fragmentation'}},
     }
 
 skills[13] = {
@@ -730,6 +766,9 @@ skills[13] = {
     [776] = {en='Pecking Flurry',skillchain={'Transfixion'}},
     [777] = {en='Sickle Slash',skillchain={'Transfixion'}},
     [780] = {en='Regal Gash',skillchain={'Distortion','Detonation'}},
+    [961] = {en='Welt',skillchain={'Scission'}},
+    [964] = {en='Roundhouse',skillchain={'Detonation'}},
+    [970] = {en='Hysteric Assault',skillchain={'Fragmentation','Transfixion'}},
     }
 
 skills[14] = {
@@ -749,3 +788,4 @@ skills[20] = {
     }
 
 return skills
+
