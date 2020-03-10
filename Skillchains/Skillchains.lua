@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.author = 'Ivaar';
 _addon.name = 'SkillChains';
-_addon.version = '1.20.03.09';
+_addon.version = '1.20.03.10';
 
 require 'common';
 require 'timer';
@@ -147,7 +147,9 @@ ashita.register_event('load', function()
     initialize();
     if setting.weapon then
         local equip = AshitaCore:GetDataManager():GetInventory():GetEquippedItem(0).ItemIndex;
-        update_weapon(math.floor(equip/256), math.floor(equip%256));
+        info.main_bag = math.floor(equip/256);
+        info.main =  math.floor(equip%256);
+        update_weapon();
         info.weapon_skills = {};
         for k = 1, 239 do
             if skills[3][k] and player:HasWeaponSkill(k) then
@@ -158,7 +160,7 @@ ashita.register_event('load', function()
 end);
 
 function update_weapon()
-    local main_weapon = AshitaCore:GetDataManager():GetInventory():GetItem(info.main_bag, info.main_weapon).Id;
+    local main_weapon = AshitaCore:GetDataManager():GetInventory():GetItem(info.main_bag, info.main).Id;
     if main_weapon ~= 0 then
         info.aeonic = aeonic_weapon[main_weapon] or
             info.range and aeonic_weapon[AshitaCore:GetDataManager():GetInventory():GetItem(info.range_bag, info.range).Id];
