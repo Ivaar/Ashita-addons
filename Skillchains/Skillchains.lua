@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.author = 'Ivaar';
 _addon.name = 'SkillChains';
-_addon.version = '1.18.03.01';
+_addon.version = '1.20.03.09';
 
 require 'common';
 require 'timer';
@@ -55,7 +55,8 @@ function S(list)
 end
 
 aeonic_weapon = S{20515,20594,20695,20843,20890,20935,20977,21025,21082,21147,21485,21694,21753,22117};
-message_ids = S{2,110,161,162,185,187,317};
+message_ids = S{2,110,161,162,185,187,317,802};
+pet_commands = {110,317};
 buff_dur = {[163]=40,[164]=30,[470]=60};
 info = {member = {}};
 
@@ -156,10 +157,11 @@ ashita.register_event('load', function()
     end
 end);
 
-function update_weapon(bag, ind)
-    local main_weapon = AshitaCore:GetDataManager():GetInventory():GetItem(bag, ind).Id;
+function update_weapon()
+    local main_weapon = AshitaCore:GetDataManager():GetInventory():GetItem(info.main_bag, info.main_weapon).Id;
     if main_weapon ~= 0 then
-        info.aeonic = aeonic_weapon[main_weapon];
+        info.aeonic = aeonic_weapon[main_weapon] or
+            info.range and aeonic_weapon[AshitaCore:GetDataManager():GetInventory():GetItem(info.range_bag, info.range).Id];
         return;
     end
     if not check_weapon then
@@ -313,11 +315,14 @@ ashita.register_event('incoming_packet', function(id, size, data)
     elseif id == 0x28 then
         local actor = struct.unpack('I', data, 6);
         local category = ashita.bits.unpack_be(data, 82, 4);
-        local ability = skills[category] and skills[category][ashita.bits.unpack_be(data, 86, 16)];
+        local param = ashita.bits.unpack_be(data, 86, 16);
         local effect = ashita.bits.unpack_be(data, 213, 17);
+        local msg = ashita.bits.unpack_be(data, 230, 10);
+        category = pet_commands[msg] and 13 or category
+        local ability = skills[category] and skills[category][param]
+        
         if ability and (category ~= 4 or buffs[actor] and chain_buff(buffs[actor]) or ashita.bits.unpack_be(data, 271, 1) == 1) then
             local mob = ashita.bits.unpack_be(data, 150, 32);
-            local msg = ashita.bits.unpack_be(data, 230, 10);
             local prop = skillchain[ashita.bits.unpack_be(data,272, 6)];
             if prop then
                 local step = (resonating[mob] and resonating[mob].step or 1) + 1;
@@ -339,7 +344,13 @@ ashita.register_event('incoming_packet', function(id, size, data)
             buffs[info.player][effect] = nil;
         end
     elseif id == 0x50 and setting.weapon and data:byte(6) == 0 then
-        update_weapon(data:byte(7), data:byte(5));
+        info.main = data:byte(5);
+        info.main_bag = data:byte(7);
+        update_weapon();
+    elseif id == 0x50 and data:byte(6) == 2 then
+        info.range = data:byte(5);
+        info.range_bag = data:byte(7);
+        update_weapon();
     elseif id == 0x63 and data:byte(5) == 9 then
         local set_buff = {};
         for n=1,32 do
