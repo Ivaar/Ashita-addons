@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.author = 'Ivaar';
 _addon.name = 'SkillChains';
-_addon.version = '1.20.03.10';
+_addon.version = '1.20.04.29';
 
 require 'common';
 require 'timer';
@@ -396,7 +396,7 @@ ashita.register_event('incoming_packet', function(id, size, data)
         info.lastAC = data:sub(5);
     elseif id == 0x44 and data:byte(5) == 0x10 and data:byte(6) == 0 and setting.spell and data:sub(9, 18) ~= info.last44 then
         local t = {};
-        for x = 9, 18 do
+        for x = 9, 28 do
             if skills[4][data:byte(x)+512] then
                t[#t+1] = skills[4][data:byte(x)+512];
             end
