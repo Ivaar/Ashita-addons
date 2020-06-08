@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.author = 'Ivaar';
 _addon.name = 'SkillChains';
-_addon.version = '1.20.04.29';
+_addon.version = '1.20.06.08';
 
 require 'common';
 require 'timer';
@@ -56,7 +56,7 @@ end
 
 aeonic_weapon = S{20515,20594,20695,20843,20890,20935,20977,21025,21082,21147,21485,21694,21753,22117};
 message_ids = S{2,110,161,162,185,187,317,802};
-pet_commands = {110,317};
+pet_commands = S{110,317};
 buff_dur = {[163]=40,[164]=30,[470]=60};
 info = {member = {}};
 
