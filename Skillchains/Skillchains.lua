@@ -316,7 +316,7 @@ function chain_buff(t)
     return t[163] and check_buff(t, 163);
 end
 
-ashita.register_event('incoming_packet', function(id, size, data)
+ashita.register_event('incoming_packet', function(id, size, data, modified, blocked)
     if id == 0x0A then
         reset()
     elseif id == 0x28 then
